@@ -11,8 +11,9 @@
           v-model="recherche"
           placeholder="Rechercher par titre ou auteur"
           class="border rounded-lg px-4 py-2"
+          @input="rechercheLivre(recherche)"
         />
-        <button @click="resetSearch" class="text-white px-3 py-2 rounded">Réinitialiser</button>
+        <button @click="resetSearch" class=" text-black btn  mx-2 btn-outline-secondary rounded">Réinitialiser</button>
         <select
           v-model="selectedCategory"
           @change="filterParCat"
@@ -25,23 +26,20 @@
         </select>
       </div>
       <div v-if="estAdmin">
-        <button @click="ajoutLivre" class="btn btn-info">Ajouter un livre</button>
+        <button @click="ajoutLivre" class="btn btn-info ajout">Ajouter un livre</button>
       </div>
     </div>
 
-    <div class="d-flex flex-wrap gap-6 justify-content-center align-content-center">
+    <div class="d-flex flex-wrap justify-content-center align-content-center">
       <BookCard v-for="livre in livres" :key="livre.id" :livre="livre" />
     </div>
 
-    <div v-if="!isFiltered" class="flex justify-content-center gap-2">
+    <div v-if="!isFiltered" class="d-flex align-content-center justify-content-center gap-2">
       <button
         v-for="page in totalPages"
         :key="page"
+        id="btnPage"
         @click="obtenirLivres(page)"
-        :class="[
-          'px-4 py-2 rounded-lg',
-          pageCourante === page ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300',
-        ]"
       >
         {{ page }}
       </button>
@@ -102,9 +100,23 @@ onMounted(() => {
   obtenirLivres(1, 4)
   getCategory()
   obtenirProfil()
-  showMessage(message,messageType)
+  if(message.value){
+    showMessage(message,messageType)
+  }
 })
 function ajoutLivre() {
   router.push('/livres/nouveau')
 }
 </script>
+
+<style scoped>
+#btnPage{
+  background-color: #271d25;
+  padding: 1rem;
+  color: white;
+}
+.ajout{
+  background-color: #271d25;
+  color: white;
+}
+</style>

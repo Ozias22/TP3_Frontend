@@ -11,6 +11,10 @@ import AppNavigationVue from './components/AppNavigation.vue'
       <RouterView />
     </section>
   </main>
+  <footer>
+    <p>Réalisé par : Ozias Tasse Douanla </p>
+    <p>TP3 A25</p>
+  </footer>
 
 </template>
 
@@ -22,6 +26,11 @@ import AppNavigationVue from './components/AppNavigation.vue'
 body{
   font-family: Georgia, 'Times New Roman', Times, serif;
   font-size: 19px;
+}
+footer{
+  background-color: #271d25;
+  padding: 1rem;
+  color: white;
 }
 @media (min-width: 1024px) {
   header {

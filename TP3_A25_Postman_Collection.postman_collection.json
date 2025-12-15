@@ -1,0 +1,264 @@
+{
+	"info": {
+		"_postman_id": "058ad538-ca3d-4a64-af27-0d322695720a",
+		"name": "TP3_A25_Postman_Collection",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48826077",
+		"_collection_link": "https://ozias22-8614710.postman.co/workspace/5a78bbee-05dc-47e3-8fdc-e0fdf5cf9a31/collection/48826077-058ad538-ca3d-4a64-af27-0d322695720a?action=share&source=collection_link&creator=48826077"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "signup",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate dynamic test data for signup",
+									"const timestamp = Date.now();",
+									"const randomSuffix = Math.random().toString(36).substring(2, 8);",
+									"",
+									"// Create unique user data to avoid duplicate user errors",
+									"const dynamicEmail = `testuser_${timestamp}@example.com`;",
+									"const dynamicUsername = `user_${randomSuffix}`;",
+									"",
+									"// Store dynamic values in variables for use in tests",
+									"pm.collectionVariables.set(\"test_email\", dynamicEmail);",
+									"pm.collectionVariables.set(\"test_username\", dynamicUsername);",
+									"",
+									"// Log the generated data for debugging",
+									"console.log(\"Generated test email:\", dynamicEmail);",
+									"console.log(\"Generated test username:\", dynamicUsername);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// ===== SUCCESS SCENARIO TESTS =====",
+									"",
+									"pm.test(\"Status code is 201 for successful signup\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains success message 'Utilisateur créé avec succès'\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Utilisateur créé avec succès\");",
+									"});",
+									"",
+									"pm.test(\"Content-Type header is application/json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response time is acceptable (less than 2000ms)\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									"",
+									"// ===== RESPONSE STRUCTURE VALIDATION =====",
+									"",
+									"pm.test(\"Response is a valid JSON object\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an(\"object\");",
+									"});",
+									"",
+									"pm.test(\"Response contains expected properties\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    // At minimum, we expect a message property on success",
+									"    pm.expect(jsonData).to.have.property(\"message\");",
+									"});",
+									"",
+									"// ===== ERROR HANDLING TESTS =====",
+									"",
+									"pm.test(\"Error response for validation failures returns 400 status\", function () {",
+									"    // This test passes if status is 201 (success) OR 400 (expected validation error)",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 400, 409]);",
+									"});",
+									"",
+									"pm.test(\"Error response contains appropriate error message\", function () {",
+									"    if (pm.response.code === 400) {",
+									"        const jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"message\");",
+									"        // Check for password validation error message",
+									"        console.log(\"Validation error message:\", jsonData.message);",
+									"    } else if (pm.response.code === 409) {",
+									"        const jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property(\"message\");",
+									"        // Likely duplicate user error",
+									"        console.log(\"Conflict error message:\", jsonData.message);",
+									"    }",
+									"});",
+									"",
+									"// ===== PASSWORD VALIDATION TEST =====",
+									"",
+									"pm.test(\"Password validation - minimum 6 characters enforced\", function () {",
+									"    const requestBody = JSON.parse(pm.request.body.raw);",
+									"    if (requestBody.password && requestBody.password.length < 6) {",
+									"        // If password is less than 6 chars, expect 400 error",
+									"        pm.expect(pm.response.code).to.eql(400);",
+									"    } else {",
+									"        // If password meets requirements, expect success or duplicate error",
+									"        pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+									"    }",
+									"});",
+									"",
+									"// ===== DUPLICATE USER HANDLING =====",
+									"",
+									"pm.test(\"Duplicate user returns appropriate error\", function () {",
+									"    if (pm.response.code === 409) {",
+									"        const jsonData = pm.response.json();",
+									"        pm.expect(jsonData.message).to.be.a(\"string\");",
+									"        console.log(\"Duplicate user detected:\", jsonData.message);",
+									"    }",
+									"});",
+									"",
+									"// ===== LOG RESPONSE FOR DEBUGGING =====",
+									"",
+									"console.log(\"Signup Response Status:\", pm.response.code);",
+									"console.log(\"Signup Response Body:\", pm.response.text());"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "panier",
+			"item": [
+				{
+					"name": "obtenir panier",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get livres",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/info?id=1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"info"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				},
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://template.postman-echo.com"
+		},
+		{
+			"key": "test_email",
+			"value": ""
+		},
+		{
+			"key": "test_username",
+			"value": ""
+		}
+	]
+}

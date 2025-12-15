@@ -27,13 +27,25 @@ export const useBooksStore = defineStore('livres', () => {
       livres.value = datas.data
       totalPages.value = datas.pagination.totalPages
     } catch (err) {
-      console.error('Error fetching books:', err)
+      console.error('Erreur lors de la récupération des livres', err)
     }
   }
 
-  const rechercheLivre = (nom) => {
+  const rechercheLivre = async (nom) => {
     recherche.value = nom
-    obtenirLivres(1, estFiltre.value ? null : 4, nom, filtreCat.value)
+    try{
+      const reponse = await fetch(`${API_URL}/api/livres/search?q=${recherche.value}`)
+      if(!reponse.ok) {
+        throw new Error(`HTTP error! status: ${reponse.status}`);
+      }
+      const data = await reponse.json()
+      if(data != null){
+        livres.value = data
+      }
+    }
+    catch (err) {
+      console.error('Erreur lors de la récupération des livres', err)
+    }
   }
 
   const filterParCat = (cat) => {
@@ -67,7 +79,7 @@ export const useBooksStore = defineStore('livres', () => {
         return { success: false, error }
       }
     } catch (err) {
-      console.error('Error adding book:', err)
+      console.error('Erreur lors de l ajout du livre:', err)
       return
     }
   }
